@@ -74,6 +74,7 @@ function newRepo(){
 	var config = getConfig(node);
 	stopNode(node);
 	userdata.Subidentities.push({"Config": config, Subidentities: []});
+	saveIdentity();
 	console.log("New Identity: ", config);
 }
 
