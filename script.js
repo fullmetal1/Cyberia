@@ -7,8 +7,8 @@ const server = new Ipfs({
 });
 
 var userdata = {
-	"Config": ""
-	
+	"Config": "",
+	"Subidentities": []
 }
 
 window.onload = function(e){
@@ -20,13 +20,11 @@ window.onload = function(e){
 
 		server.start(() => {
 			console.log('Online status: ', server.isOnline() ? 'online' : 'offline');
-//			var config = getConfig(server);
 			server.config.get((err, config) => {
 				if (err) {
 					throw err;
 				}
 				console.log('Server info: ', config);
-				console.log('Config: ', JSON.stringify(config));
 				userdata = {
 					"Config": JSON.stringify(config)
 				}
@@ -39,26 +37,7 @@ window.onload = function(e){
 };
 
 function getConfig(node){
-//	node.config.get((err, config) => {
-//		if (err) {
-//			throw err;
-//		}
-//		console.error('Config: ', config);
-//	});
-
-//	var config = node.config.get();
-
-//	node.config.get = (function(){
-//		return function(event){
-//			if (err) {
-//				throw err;
-//			}
-//			console.log('Config: ', JSON.parse(config.Config));
-//		};
-//	})(config);
-
-	console.log('Config: ', JSON.parse(config.Config));
-	return config;
+	return node.config.get();
 }
 
 function initiateNewIdentity(){
@@ -145,7 +124,7 @@ function getMultihash() {
 
 function saveIdentity() {
 	setCookie("userdata", JSON.stringify(userdata));
-	console.log("Saved userdata: ", userdata);
+	console.log("Saved  userdata: ", userdata);
 }
 
 function setCookie(cname, cvalue) {
@@ -155,8 +134,13 @@ function setCookie(cname, cvalue) {
 function loadIdentity() {
 	userdata = JSON.parse(getCookie("userdata"));
 	server.config.replace(JSON.parse(userdata.Config));
-	var config = getConfig(server);
-	console.log("Loaded userdata: ", config);
+	console.log("Loaded userdata: ", userdata);
+	server.config.get((err, config) => {
+		if (err) {
+			throw err;
+		}
+		console.log('Server info: ', config);
+	});
 }
 
 function getCookie(cname) {
