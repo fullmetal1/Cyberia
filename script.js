@@ -7,8 +7,8 @@ const server = new Ipfs({
 });
 
 var userdata = {
-	"Config": "",
-	"Subidentities": []
+	Config: "",
+	Subidentities: []
 }
 
 window.onload = function(e){
@@ -25,9 +25,7 @@ window.onload = function(e){
 					throw err;
 				}
 				console.log('Server info: ', config);
-				userdata = {
-					"Config": JSON.stringify(config)
-				}
+				userdata.Config = JSON.stringify(config)
 			});
 			
 		})
@@ -55,11 +53,38 @@ function initiateNewIdentity(){
 
 		node.start(() => {
 			console.log('Online status: ', node.isOnline() ? 'online' : 'offline');
-			getConfig(node);
+			//getConfig(node);
 		})
 	});
 	return node;
 };
+
+function stopNode(node){
+	node.stop();
+}
+
+function newRepo(){
+	var node = initiateNewIdentity();
+	var config = getConfig(node);
+	stopNode(node);
+	userdata.Subidentities.push({"Config": config, Subidentities: []});
+	console.log("New Identity: ", config);
+}
+
+function getRepo(config){
+	//todo: wait for IPNS support in js-ipfs
+	return []
+}
+
+function publishRepo(config, filelist){
+	//todo: wait for IPNS support in js-ipfs
+}
+
+function addFileToRepo(config, mutihash){
+	var filelist = getRepo(config);
+	filelist.append(multihash);
+	publishRepo(config, filelist);
+}
 
 function readFiles(files, node){
 	const filesArray = [];
