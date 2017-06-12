@@ -1,4 +1,6 @@
-# Introduction
+<h1 align="center">
+    <img src="https://raw.githubusercontent.com/fullmetal1/Cyberia/master/logo.jpg" alt="Cyberia logo" />
+</h1># Introduction
 
 ## About
 
