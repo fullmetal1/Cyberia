@@ -7,7 +7,7 @@ const server = new Ipfs({
 });
 
 var userdata = {
-	"Identity": ""
+	"Config": ""
 	
 }
 
@@ -20,14 +20,15 @@ window.onload = function(e){
 
 		server.start(() => {
 			console.log('Online status: ', server.isOnline() ? 'online' : 'offline');
+//			var config = getConfig(server);
 			server.config.get((err, config) => {
 				if (err) {
 					throw err;
 				}
 				console.log('Server info: ', config);
-				console.log('Identity: ', config.Identity);
+				console.log('Config: ', JSON.stringify(config));
 				userdata = {
-					"Identity": config.Identity.PrivKey
+					"Config": JSON.stringify(config)
 				}
 			});
 			
@@ -36,6 +37,29 @@ window.onload = function(e){
 	document.getElementById('fileAdder').addEventListener('change', publishFile, false);
 	console.log('program initiated.');
 };
+
+function getConfig(node){
+//	node.config.get((err, config) => {
+//		if (err) {
+//			throw err;
+//		}
+//		console.error('Config: ', config);
+//	});
+
+//	var config = node.config.get();
+
+//	node.config.get = (function(){
+//		return function(event){
+//			if (err) {
+//				throw err;
+//			}
+//			console.log('Config: ', JSON.parse(config.Config));
+//		};
+//	})(config);
+
+	console.log('Config: ', JSON.parse(config.Config));
+	return config;
+}
 
 function initiateNewIdentity(){
 	//make the node
@@ -52,13 +76,7 @@ function initiateNewIdentity(){
 
 		node.start(() => {
 			console.log('Online status: ', node.isOnline() ? 'online' : 'offline');
-			node.config.get((err, config) => {
-				if (err) {
-					throw err;
-				}
-				console.error('Config: ', config);
-			});
-			
+			getConfig(node);
 		})
 	});
 	return node;
@@ -136,7 +154,9 @@ function setCookie(cname, cvalue) {
 
 function loadIdentity() {
 	userdata = JSON.parse(getCookie("userdata"));
-	console.log("Loaded userdata: ", userdata);
+	server.config.replace(JSON.parse(userdata.Config));
+	var config = getConfig(server);
+	console.log("Loaded userdata: ", config);
 }
 
 function getCookie(cname) {
