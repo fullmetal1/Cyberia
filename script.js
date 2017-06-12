@@ -19,12 +19,18 @@ window.onload = function(e){
 		};
 
 		server.start(() => {
-			console.log('Online status: ', server.isOnline() ? 'online' : 'offline');
+			try {
+				loadIdentity();
+			}
+			catch(err) {
+				console.log("No identity found. Initiating new identity")
+				console.log('Server info: ', config);
+			}
+			console.log('Server status: ', server.isOnline() ? 'online' : 'offline');
 			server.config.get((err, config) => {
 				if (err) {
 					throw err;
 				}
-				console.log('Server info: ', config);
 				userdata.Config = JSON.stringify(config)
 			});
 			
